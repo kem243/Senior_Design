@@ -1,0 +1,2 @@
+rootProject.name = "Automatic Guitar Tuning App"
+include ':app'
