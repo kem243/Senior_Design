@@ -165,17 +165,6 @@
         app:layout_constraintStart_toStartOf="@+id/floatingActionButton14"
         tools:layout_editor_absoluteY="334dp" />
 
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="546dp"
-        android:layout_height="957dp"
-        android:translationX="75px"
-        android:translationY="250px"
-        android:translationZ="-100px"
-        app:srcCompat="@mipmap/head_stock_foreground"
-        tools:layout_editor_absoluteX="-98dp"
-        tools:layout_editor_absoluteY="-134dp" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton15"
         android:layout_width="38dp"
