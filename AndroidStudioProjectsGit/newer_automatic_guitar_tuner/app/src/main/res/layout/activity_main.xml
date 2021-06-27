@@ -43,16 +43,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="500dp"
-        android:layout_height="568dp"
-        android:translationX="-120px"
-        android:translationY="0px"
-        app:srcCompat="@mipmap/head_stock_big_transparent_foreground"
-        tools:layout_editor_absoluteX="-30dp"
-        tools:layout_editor_absoluteY="38dp" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton9"
         android:layout_width="80px"
@@ -60,8 +50,9 @@
         android:backgroundTint="#03A9F4"
         android:clickable="true"
         android:translationX="-60px"
-        android:translationY="-220px"
+        android:translationY="-10px"
         app:srcCompat="?attr/selectableItemBackgroundBorderless"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="129dp"
         tools:layout_editor_absoluteY="423dp" />
 
@@ -72,7 +63,7 @@
         android:text="B"
         android:textSize="28sp"
         android:translationX="-65px"
-        android:translationY="-175px"
+        android:translationY="-10px"
         android:translationZ="100px"
         app:layout_constraintBottom_toBottomOf="@+id/floatingActionButton15"
         app:layout_constraintEnd_toEndOf="@+id/floatingActionButton15"
@@ -88,7 +79,7 @@
         android:text="E"
         android:textSize="28sp"
         android:translationX="-30px"
-        android:translationY="-230px"
+        android:translationY="-10px"
         android:translationZ="100px"
         app:layout_constraintBottom_toBottomOf="@+id/floatingActionButton17"
         app:layout_constraintEnd_toEndOf="@+id/floatingActionButton17"
@@ -104,8 +95,9 @@
         android:backgroundTint="#03A9F4"
         android:clickable="true"
         android:translationX="-70px"
-        android:translationY="-180px"
+        android:translationY="-10px"
         app:srcCompat="?attr/selectableItemBackgroundBorderless"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="205dp"
         tools:layout_editor_absoluteY="320dp" />
 
@@ -116,8 +108,9 @@
         android:backgroundTint="#03A9F4"
         android:clickable="true"
         android:translationX="-45px"
-        android:translationY="-220px"
+        android:translationY="-10px"
         app:srcCompat="?attr/selectableItemBackgroundBorderless"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="91dp"
         tools:layout_editor_absoluteY="468dp" />
 
@@ -150,8 +143,9 @@
         android:backgroundTint="#03A9F4"
         android:clickable="true"
         android:translationX="-70px"
-        android:translationY="-205px"
+        android:translationY="-10px"
         app:srcCompat="?attr/selectableItemBackgroundBorderless"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="167dp"
         tools:layout_editor_absoluteY="374dp" />
 
@@ -162,7 +156,7 @@
         android:text="E"
         android:textSize="28sp"
         android:translationX="-75px"
-        android:translationY="-170px"
+        android:translationY="-10px"
         android:translationZ="100px"
         app:layout_constraintBottom_toBottomOf="@+id/floatingActionButton16"
         app:layout_constraintEnd_toEndOf="@+id/floatingActionButton16"
@@ -178,7 +172,7 @@
         android:text="D"
         android:textSize="28sp"
         android:translationX="-50px"
-        android:translationY="-215px"
+        android:translationY="-10px"
         android:translationZ="100px"
         app:layout_constraintBottom_toBottomOf="@+id/floatingActionButton13"
         app:layout_constraintEnd_toEndOf="@+id/floatingActionButton13"
@@ -193,7 +187,7 @@
         android:text="A"
         android:textSize="28sp"
         android:translationX="-45px"
-        android:translationY="-235px"
+        android:translationY="-10px"
         android:translationZ="100px"
         app:layout_constraintBottom_toBottomOf="@+id/floatingActionButton9"
         app:layout_constraintEnd_toEndOf="@+id/floatingActionButton9"
@@ -208,35 +202,53 @@
         android:text="G"
         android:textSize="28sp"
         android:translationX="-55px"
-        android:translationY="-185px"
+        android:translationY="-10px"
         android:translationZ="100px"
         app:layout_constraintEnd_toEndOf="@+id/floatingActionButton14"
         app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="@+id/floatingActionButton14"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteY="318dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton16"
         android:layout_width="80px"
         android:layout_height="80px"
+        android:layout_marginBottom="220dp"
         android:backgroundTint="#03A9F4"
         android:clickable="true"
         android:translationX="-90px"
-        android:translationY="-160px"
+        android:translationY="-10px"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/nav_host_fragment_activity_main"
         app:srcCompat="?attr/selectableItemBackgroundBorderless"
-        tools:layout_editor_absoluteX="281dp"
-        tools:layout_editor_absoluteY="221dp" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="281dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton15"
         android:layout_width="80px"
         android:layout_height="80px"
+        android:layout_marginBottom="120dp"
         android:backgroundTint="#03A9F4"
         android:clickable="true"
         android:translationX="-85px"
-        android:translationY="-165px"
+        android:translationY="-10px"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/nav_host_fragment_activity_main"
         app:srcCompat="?attr/selectableItemBackgroundBorderless"
-        tools:layout_editor_absoluteX="243dp"
-        tools:layout_editor_absoluteY="270dp" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="243dp" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="500dp"
+        android:layout_height="568dp"
+        android:translationX="-120px"
+        android:translationY="150px"
+        app:srcCompat="@mipmap/head_stock_big_transparent_foreground"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="-30dp"
+        tools:layout_editor_absoluteY="38dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
