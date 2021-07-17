@@ -65,6 +65,7 @@ public class FirstFragment extends Fragment {
                 FloatingActionButton highEStringButton = getView().findViewById(R.id.high_e_string_button);
                 //highEStringButton.setBackgroundTintList(contextInstance.getResources().getColorStateList(R.color.your_xml_name));
                 selectedString = 'E';
+                System.out.println("selected E");
             }
         });
     }
@@ -75,7 +76,7 @@ public class FirstFragment extends Fragment {
         binding = null;
     }
 
-    public static int calculate(int sampleRate, short [] audioData){
+    public int calculate(int sampleRate, short [] audioData){
 
         int numSamples = audioData.length;
         int numCrossing = 0;
@@ -93,58 +94,60 @@ public class FirstFragment extends Fragment {
         double frequency = numCycles/numSecondsRecorded;
 
         double adjustedFrequency = (double) (1.12 * frequency);
-
+        calculateDiff(adjustedFrequency);
         return (int)adjustedFrequency;
     }
 
     public int calculateDiff(double currentFrequency){
-
+        System.out.println("running");
         TextView text = getView().findViewById(R.id.textview_first2);
         double targetFrequency = 0.0;
         switch (selectedString) {
-            case 1:  selectedString = 'E';
+            case 'E':
                 if (custom_tuning){
                     targetFrequency = target_pitch_high_e_custom;
                 } else{
                     targetFrequency = target_pitch_high_e_default;
+                    System.out.println("set to E");
                 }
                 break;
-            case 2:  selectedString = 'b';
+            case 'b':
                 if (custom_tuning){
                     targetFrequency = target_pitch_b_custom;
                 } else{
                     targetFrequency = target_pitch_b_default;
                 }
                 break;
-            case 3:  selectedString = 'g';
+            case 'g':
                 if (custom_tuning){
                     targetFrequency = target_pitch_g_custom;
                 } else{
                     targetFrequency = target_pitch_g_default;
                 }
                 break;
-            case 4:  selectedString = 'd';
+            case 'd':
                 if (custom_tuning){
                     targetFrequency = target_pitch_d_custom;
                 } else{
                     targetFrequency = target_pitch_d_default;
                 }
                 break;
-            case 5:  selectedString = 'a';
+            case 'a':
                 if (custom_tuning){
                     targetFrequency = target_pitch_a_custom;
                 } else{
                     targetFrequency = target_pitch_a_default;
                 }
                 break;
-            case 6:  selectedString = 'e';
+            case 'e':
                 if (custom_tuning){
                     targetFrequency = target_pitch_low_e_custom;
                 } else{
                     targetFrequency = target_pitch_low_e_default;
                 }
                 break;
-            default: selectedString = 'X';
+            default:
+                System.out.println("default");
                 return 0;
         }
         double diff = 0.0;
@@ -154,7 +157,8 @@ public class FirstFragment extends Fragment {
         } else {
             diff = currentFrequency - targetFrequency;
         }
-        text.setText("Difference = " + diff);
+        System.out.println("hi");
+        text.setText("Difference = " + (int)diff);
 
         return (int)diff;
     }
