@@ -1,5 +1,6 @@
 package com.droiduino.final_guitar_tuning_app;
 
+import android.graphics.Color;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -13,10 +14,28 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.droiduino.final_guitar_tuning_app.databinding.FragmentFirstBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
+    public char selectedString = 'X';
+
+    public double target_pitch_high_e_default = 329.63;
+    public double target_pitch_b_default = 246.94;
+    public double target_pitch_g_default = 196.00;
+    public double target_pitch_d_default = 146.83;
+    public double target_pitch_a_default = 110.00;
+    public double target_pitch_low_e_default = 82.41;
+
+    public boolean custom_tuning = false;
+
+    public double target_pitch_high_e_custom = 0.0;
+    public double target_pitch_b_custom = 0.0;
+    public double target_pitch_g_custom = 0.0;
+    public double target_pitch_d_custom = 0.0;
+    public double target_pitch_a_custom = 0.0;
+    public double target_pitch_low_e_custom = 0.0;
 
     @Override
     public View onCreateView(
@@ -43,8 +62,9 @@ public class FirstFragment extends Fragment {
         binding.highEStringButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //     art.onRequestPermissionsResult();
-                getpitch();
+                FloatingActionButton highEStringButton = getView().findViewById(R.id.high_e_string_button);
+                //highEStringButton.setBackgroundTintList(contextInstance.getResources().getColorStateList(R.color.your_xml_name));
+                selectedString = 'E';
             }
         });
     }
@@ -68,14 +88,77 @@ public class FirstFragment extends Fragment {
             }
         }
 
-        float numSecondsRecorded = (float)numSamples/(float)sampleRate;
-        float numCycles = ((float)numCrossing)/2;
-        float frequency = numCycles/numSecondsRecorded;
+        double numSecondsRecorded = (double)numSamples/(double)sampleRate;
+        double numCycles = ((double)numCrossing)/2;
+        double frequency = numCycles/numSecondsRecorded;
 
-        float adjustedFrequency = (float) (1.12 * frequency);
+        double adjustedFrequency = (double) (1.12 * frequency);
 
         return (int)adjustedFrequency;
     }
+
+    public int calculateDiff(double currentFrequency){
+
+        TextView text = getView().findViewById(R.id.textview_first2);
+        double targetFrequency = 0.0;
+        switch (selectedString) {
+            case 1:  selectedString = 'E';
+                if (custom_tuning){
+                    targetFrequency = target_pitch_high_e_custom;
+                } else{
+                    targetFrequency = target_pitch_high_e_default;
+                }
+                break;
+            case 2:  selectedString = 'b';
+                if (custom_tuning){
+                    targetFrequency = target_pitch_b_custom;
+                } else{
+                    targetFrequency = target_pitch_b_default;
+                }
+                break;
+            case 3:  selectedString = 'g';
+                if (custom_tuning){
+                    targetFrequency = target_pitch_g_custom;
+                } else{
+                    targetFrequency = target_pitch_g_default;
+                }
+                break;
+            case 4:  selectedString = 'd';
+                if (custom_tuning){
+                    targetFrequency = target_pitch_d_custom;
+                } else{
+                    targetFrequency = target_pitch_d_default;
+                }
+                break;
+            case 5:  selectedString = 'a';
+                if (custom_tuning){
+                    targetFrequency = target_pitch_a_custom;
+                } else{
+                    targetFrequency = target_pitch_a_default;
+                }
+                break;
+            case 6:  selectedString = 'e';
+                if (custom_tuning){
+                    targetFrequency = target_pitch_low_e_custom;
+                } else{
+                    targetFrequency = target_pitch_low_e_default;
+                }
+                break;
+            default: selectedString = 'X';
+                return 0;
+        }
+        double diff = 0.0;
+        double stepAmount = 0.0;
+        if (targetFrequency > currentFrequency){
+            diff = targetFrequency - currentFrequency;
+        } else {
+            diff = currentFrequency - targetFrequency;
+        }
+        text.setText("Difference = " + diff);
+
+        return (int)diff;
+    }
+
     public void getpitch(){
         int channel_config = AudioFormat.CHANNEL_IN_MONO;
         int format = AudioFormat.ENCODING_PCM_16BIT;
