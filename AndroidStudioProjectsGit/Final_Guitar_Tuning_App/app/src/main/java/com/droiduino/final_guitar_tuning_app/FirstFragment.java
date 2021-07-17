@@ -1,20 +1,6 @@
 package com.droiduino.final_guitar_tuning_app;
 
 import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioRecord;
-import android.media.AudioTrack;
-import android.media.MediaRecorder;
-import android.os.Handler;
-//import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -23,39 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.io.File;
-import java.io.IOException;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.droiduino.final_guitar_tuning_app.databinding.FragmentFirstBinding;
-
-
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.droiduino.final_guitar_tuning_app.databinding.ActivityMainBinding;
-
-import android.view.Menu;
-import android.view.MenuItem;
-
 
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
-    MediaRecorder mr;
-    AudioRecord recorder = null;
-    private Thread recordingThread = null;
 
     @Override
     public View onCreateView(
@@ -71,12 +32,19 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         boolean recording = false;
-
+        TextView text = getView().findViewById(R.id.textview_first);
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //     art.onRequestPermissionsResult();
-                getpitch(view);
+                getpitch();
+            }
+        });
+        binding.highEStringButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //     art.onRequestPermissionsResult();
+                getpitch();
             }
         });
     }
@@ -101,17 +69,19 @@ public class FirstFragment extends Fragment {
         }
 
         float numSecondsRecorded = (float)numSamples/(float)sampleRate;
-        float numCycles = numCrossing/2;
+        float numCycles = ((float)numCrossing)/2;
         float frequency = numCycles/numSecondsRecorded;
 
-        return (int)frequency;
+        float adjustedFrequency = (float) (1.12 * frequency);
+
+        return (int)adjustedFrequency;
     }
-    public void getpitch(View v){
+    public void getpitch(){
         int channel_config = AudioFormat.CHANNEL_IN_MONO;
         int format = AudioFormat.ENCODING_PCM_16BIT;
         int sampleSize = 44100;
         int bufferSize = 10000;
-        System.out.println(bufferSize);
+        TextView text = getView().findViewById(R.id.textview_first);
         AudioRecord audioInput = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleSize, channel_config, format, bufferSize);
         //TextView txtview = (TextView)findViewById(R.id.text);
 
@@ -122,14 +92,9 @@ public class FirstFragment extends Fragment {
         //recorder.read(audioBuffer, 0, bufferSize);
         //txtview.setText(""+calculate(8000,audioBuffer));
         audioInput.stop();
-        short[] temp = new short[500];
-        /*for (int i = 0; i < 3000; i++) {
-            System.out.print(audioBuffer[i] + " ");
-            if (i % 50 == 0){
-                System.out.println("");
-            }
-        }*/
+        text.setText("Frequency = " + calculate(sampleSize, audioBuffer));
         System.out.println(calculate(sampleSize,audioBuffer));
+        audioBuffer = null;
         audioInput.release();
     }
 }
