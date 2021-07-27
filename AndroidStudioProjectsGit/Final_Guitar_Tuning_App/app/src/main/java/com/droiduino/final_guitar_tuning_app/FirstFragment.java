@@ -1,6 +1,6 @@
 package com.droiduino.final_guitar_tuning_app;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.droiduino.final_guitar_tuning_app.databinding.FragmentFirstBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -50,7 +51,6 @@ public class FirstFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        boolean recording = false;
         TextView text = getView().findViewById(R.id.textview_first);
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +68,12 @@ public class FirstFragment extends Fragment {
                 System.out.println("selected E");
             }
         });
+        binding.blueToothButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(v.getContext(), bluetoothActivity.class));
+            }
+        });
     }
 
     @Override
@@ -77,29 +83,50 @@ public class FirstFragment extends Fragment {
     }
 
     public int calculate(int sampleRate, short [] audioData){
-
-        int numSamples = audioData.length;
-        int numCrossing = 0;
-        for (int p = 0; p < numSamples-1; p++)
-        {
-            if ((audioData[p] > 0 && audioData[p + 1] <= 0) ||
-                    (audioData[p] < 0 && audioData[p + 1] >= 0))
-            {
-                numCrossing++;
+        int sampleSize = 2048;
+        FFT fourier = new FFT();
+        Complex[] x = new Complex[sampleSize];
+        int max = 600;
+        int temp = audioData.length - sampleSize;
+        for (int i = temp; i < audioData.length; i++){
+            x[i - temp] = new Complex((double)audioData[i], 0);
+        }
+        Complex[] y = fourier.fft(x);
+        double[] amp = new double[max];
+        double total = 0;
+        double ave = 0;
+        for (int i = 0; i < max; i++){
+            double temp2 = y[i].re();
+            double nextTemp = temp2 * temp2 / sampleSize;
+            total += nextTemp;
+            amp[i] = nextTemp;
+        }
+        ave = total / max;
+        double maximum = 0;
+        int ind = 0;
+        double mult = 2;
+        for (int j = 0; j < max - 10; j++){
+            if (amp[j] > 2 * ave){
+                for (int i = j; i < j + 10; i++){
+                    if (amp[i] > maximum){
+                        maximum = amp[i];
+                        ind = i;
+                    }
+                }
+                break;
+            }
+            if (j == max - 11){
+                mult -= .5;
+                j = 0;
             }
         }
-
-        double numSecondsRecorded = (double)numSamples/(double)sampleRate;
-        double numCycles = ((double)numCrossing)/2;
-        double frequency = numCycles/numSecondsRecorded;
-
-        double adjustedFrequency = (double) (1.12 * frequency);
-        calculateDiff(adjustedFrequency);
-        return (int)adjustedFrequency;
+        x = null;
+        y = null;
+        calculateDiff(ind * sampleRate / sampleSize);
+        return Math.round(ind * sampleRate / sampleSize);
     }
 
     public int calculateDiff(double currentFrequency){
-        System.out.println("running");
         TextView text = getView().findViewById(R.id.textview_first2);
         double targetFrequency = 0.0;
         switch (selectedString) {
@@ -108,7 +135,6 @@ public class FirstFragment extends Fragment {
                     targetFrequency = target_pitch_high_e_custom;
                 } else{
                     targetFrequency = target_pitch_high_e_default;
-                    System.out.println("set to E");
                 }
                 break;
             case 'b':
@@ -157,7 +183,6 @@ public class FirstFragment extends Fragment {
         } else {
             diff = currentFrequency - targetFrequency;
         }
-        System.out.println("hi");
         text.setText("Difference = " + (int)diff);
 
         return (int)diff;
@@ -166,8 +191,8 @@ public class FirstFragment extends Fragment {
     public void getpitch(){
         int channel_config = AudioFormat.CHANNEL_IN_MONO;
         int format = AudioFormat.ENCODING_PCM_16BIT;
-        int sampleSize = 44100;
-        int bufferSize = 10000;
+        int sampleSize = 5512;
+        int bufferSize = 2756;
         TextView text = getView().findViewById(R.id.textview_first);
         AudioRecord audioInput = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleSize, channel_config, format, bufferSize);
         //TextView txtview = (TextView)findViewById(R.id.text);
@@ -180,7 +205,6 @@ public class FirstFragment extends Fragment {
         //txtview.setText(""+calculate(8000,audioBuffer));
         audioInput.stop();
         text.setText("Frequency = " + calculate(sampleSize, audioBuffer));
-        System.out.println(calculate(sampleSize,audioBuffer));
         audioBuffer = null;
         audioInput.release();
     }

@@ -1,4 +1,4 @@
-package com.droiduino.simplebluetooth;
+package com.droiduino.final_guitar_tuning_app;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -10,6 +10,8 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.SystemClock;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,42 +28,10 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import android.content.Intent;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
+public class bluetoothActivity extends Fragment {
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-public class MainActivity extends AppCompatActivity {
-
-    public char selectedString = 'X';
-
-    public double target_pitch_high_e_default = 329.63;
-    public double target_pitch_b_default = 246.94;
-    public double target_pitch_g_default = 196.00;
-    public double target_pitch_d_default = 146.83;
-    public double target_pitch_a_default = 110.00;
-    public double target_pitch_low_e_default = 82.41;
-
-    public boolean custom_tuning = false;
-
-    public double target_pitch_high_e_custom = 0.0;
-    public double target_pitch_b_custom = 0.0;
-    public double target_pitch_g_custom = 0.0;
-    public double target_pitch_d_custom = 0.0;
-    public double target_pitch_a_custom = 0.0;
-    public double target_pitch_low_e_custom = 0.0;
-
+    private static final int RESULT_OK = ;
     // GUI Components
     private TextView mBluetoothStatus;
     private TextView mReadBuffer;
@@ -74,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<String> mBTArrayAdapter;
     private ListView mDevicesListView;
     private CheckBox mLED1;
-    private CheckBox mLED2;
 
     private Handler mHandler; // Our main handler that will receive callback notifications
     private ConnectedThread mConnectedThread; // bluetooth background worker thread to send and receive data
@@ -90,23 +59,22 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
-        mBluetoothStatus = (TextView)findViewById(R.id.bluetoothStatus);
-        mReadBuffer = (TextView) findViewById(R.id.readBuffer);
-        mScanBtn = (Button)findViewById(R.id.scan);
-        mOffBtn = (Button)findViewById(R.id.off);
-        mDiscoverBtn = (Button)findViewById(R.id.discover);
-        mListPairedDevicesBtn = (Button)findViewById(R.id.PairedBtn);
-        mLED1 = (CheckBox)findViewById(R.id.checkboxLED1);
-        mLED2 = (CheckBox)findViewById(R.id.checkboxLED2);
+        mBluetoothStatus = (TextView)getView().findViewById(R.id.bluetoothStatus);
+        mReadBuffer = (TextView) getView().findViewById(R.id.readBuffer);
+        mScanBtn = (Button)getView().findViewById(R.id.scan);
+        mOffBtn = (Button)getView().findViewById(R.id.off);
+        mDiscoverBtn = (Button)getView().findViewById(R.id.discover);
+        mListPairedDevicesBtn = (Button)getView().findViewById(R.id.PairedBtn);
+        mLED1 = (CheckBox)getView().findViewById(R.id.checkboxLED1);
 
         mBTArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
         mBTAdapter = BluetoothAdapter.getDefaultAdapter(); // get a handle on the bluetooth radio
 
-        mDevicesListView = (ListView)findViewById(R.id.devicesListView);
+        mDevicesListView = (ListView)getView().findViewById(R.id.devicesListView);
         mDevicesListView.setAdapter(mBTArrayAdapter); // assign model to view
         mDevicesListView.setOnItemClickListener(mDeviceClickListener);
 
@@ -144,58 +112,23 @@ public class MainActivity extends AppCompatActivity {
             mLED1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
-                    System.out.print("left was listened to");
-                    if(mConnectedThread != null) {
-                        //First check to make sure thread created
-                        // Binary Time value
+                    if(mConnectedThread != null) //First check to make sure thread created
                         mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-                        System.out.print("End of if statement for left");
-                    }
-                }
-            });
-            mLED2.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    System.out.print("right was listened to");
-                    if(mConnectedThread != null) {
-                        //First check to make sure thread created
-                        // Binary Time value
-                        mConnectedThread.write("2");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-                        System.out.print("End of if statement for right");
-                    }
                 }
             });
 
 
             mScanBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    //     art.onRequestPermissionsResult();
-                    getpitch();
+                public void onClick(View v) {
+                    bluetoothOn(v);
                 }
             });
 
             mOffBtn.setOnClickListener(new View.OnClickListener(){
                 @Override
-                public void onClick(View view) {
-                    //FloatingActionButton highEStringButton = view.findViewById(R.id.high_e_string_button);
-                    //highEStringButton.setBackgroundTintList(contextInstance.getResources().getColorStateList(R.color.your_xml_name));
-                    selectedString = 'E';
-                    System.out.println("selected E");
+                public void onClick(View v){
+                    bluetoothOff(v);
                 }
             });
 
@@ -254,17 +187,17 @@ public class MainActivity extends AppCompatActivity {
         // Check if the device is already discovering
         if(mBTAdapter.isDiscovering()){
             mBTAdapter.cancelDiscovery();
-            Toast.makeText(getApplicationContext(),"Discovery stopped",Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(),"Discovery stopped",Toast.LENGTH_SHORT).show();
         }
         else{
             if(mBTAdapter.isEnabled()) {
                 mBTArrayAdapter.clear(); // clear items
                 mBTAdapter.startDiscovery();
-                Toast.makeText(getApplicationContext(), "Discovery started", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), "Discovery started", Toast.LENGTH_SHORT).show();
                 registerReceiver(blReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
             }
             else{
-                Toast.makeText(getApplicationContext(), "Bluetooth not on", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), "Bluetooth not on", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -299,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
 
             if(!mBTAdapter.isEnabled()) {
-                Toast.makeText(getBaseContext(), "Bluetooth not on", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Bluetooth not on", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -321,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                         mBTSocket = createBluetoothSocket(device);
                     } catch (IOException e) {
                         fail = true;
-                        Toast.makeText(getBaseContext(), "Socket creation failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Socket creation failed", Toast.LENGTH_SHORT).show();
                     }
                     // Establish the Bluetooth socket connection.
                     try {
@@ -334,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                                     .sendToTarget();
                         } catch (IOException e2) {
                             //insert code to deal with this
-                            Toast.makeText(getBaseContext(), "Socket creation failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(v.getContext(), "Socket creation failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                     if(fail == false) {
@@ -412,157 +345,5 @@ public class MainActivity extends AppCompatActivity {
                 mmSocket.close();
             } catch (IOException e) { }
         }
-    }
-    public int calculate(int sampleRate, short [] audioData){
-        int sampleSize = 2048;
-        FFT fourier = new FFT();
-        Complex[] x = new Complex[sampleSize];
-        int max = 600;
-        int temp = audioData.length - sampleSize;
-        for (int i = temp; i < audioData.length; i++){
-            x[i - temp] = new Complex((double)audioData[i], 0);
-        }
-        Complex[] y = fourier.fft(x);
-        double[] amp = new double[max];
-        double total = 0;
-        double ave = 0;
-        for (int i = 0; i < max; i++){
-            double temp2 = y[i].re();
-            double nextTemp = temp2 * temp2 / sampleSize;
-            total += nextTemp;
-            amp[i] = nextTemp;
-        }
-        ave = total / max;
-        double maximum = 0;
-        int ind = 0;
-        double mult = 2;
-        for (int j = 0; j < max - 10; j++){
-            if (amp[j] > 2 * ave){
-                for (int i = j; i < j + 10; i++){
-                    if (amp[i] > maximum){
-                        maximum = amp[i];
-                        ind = i;
-                    }
-                }
-                break;
-            }
-            if (j == max - 11){
-                mult -= .5;
-                j = 0;
-            }
-        }
-        x = null;
-        y = null;
-        int diffval = calculateDiff(ind * sampleRate / sampleSize);
-        if(diffval < 0){
-            if(mConnectedThread != null) {
-                //First check to make sure thread created
-                // Binary Time value
-                mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-                System.out.print("End of if statement for left");
-            }
-        } else if (diffval > 0){
-            if(mConnectedThread != null) {
-                //First check to make sure thread created
-                // Binary Time value
-                mConnectedThread.write("2");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-//                        mConnectedThread.write("1");
-//                        mConnectedThread.write("0");
-                System.out.print("End of if statement for left");
-            }
-        }
-        return Math.round(ind * sampleRate / sampleSize);
-    }
-
-    public int calculateDiff(double currentFrequency){
-        //TextView text = getView().findViewById(R.id.textview_first2);
-        double targetFrequency = 0.0;
-        switch (selectedString) {
-            case 'E':
-                if (custom_tuning){
-                    targetFrequency = target_pitch_high_e_custom;
-                } else{
-                    targetFrequency = target_pitch_high_e_default;
-                }
-                break;
-            case 'b':
-                if (custom_tuning){
-                    targetFrequency = target_pitch_b_custom;
-                } else{
-                    targetFrequency = target_pitch_b_default;
-                }
-                break;
-            case 'g':
-                if (custom_tuning){
-                    targetFrequency = target_pitch_g_custom;
-                } else{
-                    targetFrequency = target_pitch_g_default;
-                }
-                break;
-            case 'd':
-                if (custom_tuning){
-                    targetFrequency = target_pitch_d_custom;
-                } else{
-                    targetFrequency = target_pitch_d_default;
-                }
-                break;
-            case 'a':
-                if (custom_tuning){
-                    targetFrequency = target_pitch_a_custom;
-                } else{
-                    targetFrequency = target_pitch_a_default;
-                }
-                break;
-            case 'e':
-                if (custom_tuning){
-                    targetFrequency = target_pitch_low_e_custom;
-                } else{
-                    targetFrequency = target_pitch_low_e_default;
-                }
-                break;
-            default:
-                System.out.println("default");
-                return 0;
-        }
-        double diff = 0.0;
-        double stepAmount = 0.0;
-        diff = targetFrequency - currentFrequency;  
-        //text.setText("Difference = " + (int)diff);
-
-        return (int)diff;
-    }
-
-    public void getpitch(){
-        int channel_config = AudioFormat.CHANNEL_IN_MONO;
-        int format = AudioFormat.ENCODING_PCM_16BIT;
-        int sampleSize = 5512;
-        int bufferSize = 2756;
-        //TextView text = getView().findViewById(R.id.textview_first);
-        AudioRecord audioInput = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleSize, channel_config, format, bufferSize);
-        //TextView txtview = (TextView)findViewById(R.id.text);
-
-        short[] audioBuffer = new short[bufferSize];
-        audioInput.startRecording();
-        audioInput.read(audioBuffer, 0, bufferSize);
-        //recorder.startRecording();
-        //recorder.read(audioBuffer, 0, bufferSize);
-        //txtview.setText(""+calculate(8000,audioBuffer));
-        audioInput.stop();
-        calculate(sampleSize, audioBuffer);
-        //text.setText("Frequency = " + calculate(sampleSize, audioBuffer));
-        audioBuffer = null;
-        audioInput.release();
     }
 }

@@ -16,18 +16,31 @@
         android:layout_height="match_parent">
 
         <CheckBox
+            android:id="@+id/checkboxLED1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Toggle LED"
-            android:id="@+id/checkboxLED1"
+            android:layout_alignStart="@+id/bluetoothStatus"
+            android:layout_alignLeft="@+id/bluetoothStatus"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:checked="false"
-            android:layout_alignLeft="@+id/bluetoothStatus"
-            android:layout_alignStart="@+id/bluetoothStatus"
             android:scaleX="1.7"
             android:scaleY="1.7"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal" />
+            android:text="Left"
+            android:textStyle="bold" />
+        <CheckBox
+            android:id="@+id/checkboxLED2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/bluetoothStatus"
+            android:layout_alignLeft="@+id/bluetoothStatus"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:checked="false"
+            android:scaleX="1.7"
+            android:scaleY="1.7"
+            android:text="right"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -79,21 +92,21 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/scan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Bluetooth ON"
-            android:id="@+id/scan"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/off" />
+            android:layout_toStartOf="@+id/off"
+            android:text="Start Tuning" />
 
         <Button
+            android:id="@+id/off"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Bluetooth OFF"
-            android:id="@+id/off"
             android:layout_alignBottom="@+id/scan"
             android:layout_toEndOf="@+id/PairedBtn"
-            android:layout_toRightOf="@+id/PairedBtn" />
+            android:layout_toRightOf="@+id/PairedBtn"
+            android:text="Select E String" />
 
         <Button
             android:layout_width="match_parent"
